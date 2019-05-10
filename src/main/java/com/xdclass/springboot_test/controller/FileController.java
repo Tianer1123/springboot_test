@@ -19,6 +19,9 @@ public class FileController {
     @RequestMapping(value = "/upload")
     @ResponseBody
     public JsonData upload(@RequestParam("head_img")MultipartFile file, HttpServletRequest request) {
+        // file.isEmpty() 文件不能为空判断
+        // file.getSize() 文件大小判断
+
         // 获取form表单其他内容
         String name = request.getParameter("name");
         System.out.println("用户名：" + name);
