@@ -35,6 +35,7 @@ public class FileController {
         fileName = UUID.randomUUID() + suffixName;
         System.out.println("转换后的名称:" + fileName);
         File dest = new File(filePath + fileName);
+        System.out.println("文件上传后的路径：" + filePath + fileName);
 
         try {
             // 文件存放到目的地
@@ -45,6 +46,6 @@ public class FileController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new JsonData(-1, "fail to save file");
+        return new JsonData(-1, "fail to save file", fileName);
     }
 }

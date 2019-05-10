@@ -10,9 +10,10 @@ public class JsonData implements Serializable {
     // 错误信息
     private String msg;
 
-    public JsonData(int code, String msg) {
+    public JsonData(int code, String msg, Object data) {
         this.code = code;
         this.msg = msg;
+        this.data = data;
     }
 
     public JsonData(int code, Object data) {
