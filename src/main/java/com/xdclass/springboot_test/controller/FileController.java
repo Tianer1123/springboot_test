@@ -1,5 +1,6 @@
 package com.xdclass.springboot_test.controller;
 
+import com.xdclass.springboot_test.domain.JsonData;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,11 +14,11 @@ import java.util.UUID;
 
 @Controller
 public class FileController {
-    private static final String filePath = "D:\\Code\\springboot_test\\src\\main\\resources\\static\\images";
+    private static final String filePath = "D:\\Code\\springboot_test\\src\\main\\resources\\static\\images\\";
 
-    @RequestMapping(value = "upload")
+    @RequestMapping(value = "/upload")
     @ResponseBody
-    public String upload(@RequestParam("head_img")MultipartFile file, HttpServletRequest request) {
+    public JsonData upload(@RequestParam("head_img")MultipartFile file, HttpServletRequest request) {
         // 获取form表单其他内容
         String name = request.getParameter("name");
         System.out.println("用户名：" + name);
@@ -38,12 +39,12 @@ public class FileController {
         try {
             // 文件存放到目的地
             file.transferTo(dest);
-            return fileName;
+            return new JsonData(0, fileName);
         } catch (IllegalStateException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "上传失败";
+        return new JsonData(-1, "fail to save file");
     }
 }
