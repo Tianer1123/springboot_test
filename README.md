@@ -3,9 +3,39 @@
 ## 请求参数 
 
 - **@PathVariable:**   路径参数 `/{arg1}/{arg2}` 方法中写法：`(@PathVariable("arg1") String arg1, @PathVarible("arg2") String arg2`。
+
 - **@RequestParam:** `url`中 `?` 后面的参数 `http://localhost:8080/v1?id=1`
+
+  ``` java
+  @Controller
+  public class ArgsController {
+      Map<String, String> res = new HashMap<>();
+      @GetMapping("/v1")
+      @ResponseBody
+      public Object getParams(@RequestParam String arg1, String arg2) {
+          res.put("arg1", arg1);
+          res.put("arg2", arg2);
+          return res;
+      }
+  }
+  ```
+
+  请求连接：
+
+  ``` http
+  http://localhost:8080/v1?arg1=Hello&arg2=World
+  ```
+
+  返回结果：
+
+  ``` json
+  {"arg2":"World","arg1":"Hello"}
+  ```
+
 - **@RequestBody:** `body`
+
 - **@RequestHeader:** `header`
+
 - **HttpServletRequest request:** 自动注入获取参数
 
 
