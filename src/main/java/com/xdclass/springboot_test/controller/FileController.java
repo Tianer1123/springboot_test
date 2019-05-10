@@ -1,6 +1,10 @@
 package com.xdclass.springboot_test.controller;
 
 import com.xdclass.springboot_test.domain.JsonData;
+import com.xdclass.springboot_test.domain.ServerConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,8 +17,13 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Controller
+@RequestMapping
+@PropertySource("classpath:application.properties")
 public class FileController {
-    private static final String filePath = "D:\\Code\\springboot_test\\src\\main\\resources\\static\\images\\";
+    // private static final String filePath = "D:\\Code\\springboot_test\\src\\main\\resources\\static\\images\\";
+    // 读取配置文件中的值
+    @Value("${web.images-path}")
+    private String filePath;
 
     @RequestMapping(value = "/upload")
     @ResponseBody
@@ -22,6 +31,7 @@ public class FileController {
         // file.isEmpty() 文件不能为空判断
         // file.getSize() 文件大小判断
 
+        System.out.println("上传路径是：" + filePath);
         // 获取form表单其他内容
         String name = request.getParameter("name");
         System.out.println("用户名：" + name);
@@ -50,5 +60,14 @@ public class FileController {
             e.printStackTrace();
         }
         return new JsonData(-1, "fail to save file", fileName);
+    }
+
+    @Autowired
+    ServerConfig serverConfig;
+
+    @RequestMapping("/v2")
+    @ResponseBody
+    public Object getServer() {
+        return serverConfig;
     }
 }
