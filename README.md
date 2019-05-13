@@ -234,4 +234,147 @@ fastdfs、阿里云oss、nginx自己搭建的简单文件服务器等等。
    }
    ```
 
-   
+
+
+
+# Oracle分页查询
+
+``` sql
+-- 这种写反比较高效
+SELECT * FROM  
+(  
+SELECT A.*, ROWNUM RN  
+FROM (SELECT * FROM TABLE_NAME) A  
+WHERE ROWNUM <= 40  
+)  
+WHERE RN >= 21  
+```
+
+等同于下面的写法
+
+``` sql
+-- 这种写法简单，但是效率比较低
+SELECT * FROM  
+(  
+SELECT A.*, ROWNUM RN  
+FROM (SELECT * FROM TABLE_NAME) A  
+)  
+WHERE RN BETWEEN 21 AND 40
+```
+
+
+
+
+
+# 单元测试与自定义异常
+
+## 单元测试
+
+``` java
+ @Test
+    public void contextLoads() {
+        System.out.println("Hello!");
+        TestCase.assertEquals(1, 1);
+    }
+
+    @Test
+    public void contextLoads2() {
+        System.out.println("contextLoads2");
+    }
+
+    // test之前调用
+    @Before
+    public void testBefroe() {
+        System.out.println("before");
+    }
+
+    // test之后调用
+    @After
+    public void testAfter() {
+        System.out.println("after");
+    }
+```
+
+## MockMvc模拟http请求
+
+测试API接口使用`MockMvc`模拟请求：
+
+``` java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+// 需要添加这个注解
+@AutoConfigureMockMvc
+public class SpringbootTestApplicationTests {
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Test
+    public void testArgsController() throws Exception{
+        // perform模拟一个http请求
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/v1?arg1=1&arg2=2")).
+                andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+        System.out.println(result.getResponse().getContentAsString());
+    }
+}
+```
+
+## 设置banner
+
+[设置banner官方文档](https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#boot-features-banner)
+
+1. 创建 `banner.txt`文件
+2. 修改配置`spring.banner.location=banner.txt`
+
+## Debug日志打印
+
+``` shell
+java -jar *.jar --debug
+```
+
+## 自定义异常处理
+
+``` java
+// 返回json串，如果使用@ControllerAdvice注解，需要添加@ReponseBody注解
+//@ControllerAdvice
+@RestControllerAdvice
+public class CustomExceptionHandler {
+    // 获取所有的异常信息
+    @ExceptionHandler(value = Exception.class)
+    // @ResponseBody
+    Object handleException(Exception e, HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 100);
+        map.put("msg", e.getMessage());
+        map.put("url", request.getRequestURL());
+        return map;
+    }
+}
+```
+
+测试用的controller：
+
+``` java
+@Controller
+public class TestExceptionController {
+    @GetMapping("/testException")
+    @ResponseBody
+    public Object index() {
+        int i = 1 / 0; // 这里会报异常
+        return new JsonData(0, "HelloWorld", null);
+    }
+}
+```
+
+返回的结果：
+
+``` json
+{
+    msg: "/ by zero",
+    code: 100,
+    url: "http://localhost:8080/testException",
+}
+```
+
+如果不自定义这些信息，返回的异常信息将非常不友好。
