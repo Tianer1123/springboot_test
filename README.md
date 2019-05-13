@@ -225,7 +225,7 @@ fastdfs、阿里云oss、nginx自己搭建的简单文件服务器等等。
    }
    ```
 
-   返回的结果是：
+   访问:http://localhost:8080/v2 返回的结果是：
 
    ``` json
    {
