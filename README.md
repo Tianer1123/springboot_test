@@ -333,7 +333,9 @@ public class SpringbootTestApplicationTests {
 java -jar *.jar --debug
 ```
 
-## 自定义异常处理
+## 自定义异常处理1
+
+[自定义异常处理官网文档](https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#boot-features-error-handling)
 
 ``` java
 // 返回json串，如果使用@ControllerAdvice注解，需要添加@ReponseBody注解
@@ -378,3 +380,64 @@ public class TestExceptionController {
 ```
 
 如果不自定义这些信息，返回的异常信息将非常不友好。
+
+
+
+## 自定义异常处理2
+
+``` java
+// 自定义异常类
+public class MyException extends RuntimeException{
+    int code;
+    String msg;
+
+    public MyException(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+}
+```
+
+
+
+`CustomExceptionHandler` 中添加自定义的异常处理函数
+
+``` java
+@ExceptionHandler(value = MyException.class)
+    Object handleMyException(MyException e, HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", e.getCode());
+        map.put("msg", e.getMsg());
+        map.put("url", request.getRequestURL());
+        return map;
+    }
+```
+
+
+
+controller中抛出自定义异常：
+
+``` java
+    @GetMapping("/testMyException")
+    @ResponseBody
+    public Object index2() {
+        throw new MyException(499, "page not found!");
+    }
+```
+

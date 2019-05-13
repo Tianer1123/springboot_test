@@ -22,4 +22,13 @@ public class CustomExceptionHandler {
         map.put("url", request.getRequestURL());
         return map;
     }
+
+    @ExceptionHandler(value = MyException.class)
+    Object handleMyException(MyException e, HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", e.getCode());
+        map.put("msg", e.getMsg());
+        map.put("url", request.getRequestURL());
+        return map;
+    }
 }
