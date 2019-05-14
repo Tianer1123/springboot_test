@@ -502,7 +502,9 @@ public class DemoApplication {
 2. 属性必须私有化。
 3. 私有化的属性必须通过public类型的方法暴露给其它程序，并且方法的命名也必须遵守一定的命名规范。
 
-# Filter过滤器
+# Filter, Servlet, Listener
+
+## Filter过滤器
 
 > 举个例子: 人-->检票员（filter）-->景点
 
@@ -600,6 +602,65 @@ http://localhost:8080/api/testFilter?userName=tianer&passWord=123
     userName: "tianer",
 }
 ```
+
+## 自定义原生servlet
+
+servlet3.0自定义原生servlet
+
+``` java
+// 启动函数需要加一下注解，与过滤器一样
+@ServletComponentScan
+```
+
+
+
+``` java
+@WebServlet(name = "userServlet", urlPatterns = "/api/v1/test/do")
+public class UserServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().print("user servlet");
+        resp.getWriter().flush();
+        resp.getWriter().close();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.doGet(req, resp);
+    }
+}
+```
+
+## Listener
+
+常用的三个listener: `ServletRequestListener`,`ServletContextListener`,`HttpSessionListener`
+
+
+
+``` java
+@WebListener
+public class RequestListener implements ServletRequestListener {
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+        System.out.println("========requestDestroyed========");
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+        System.out.println("========requestInitialized========");
+    }
+}
+```
+
+
+
+[Servlets, Filters, Listeners官方文档介绍](https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#boot-features-embedded-container-servlets-filters-listeners)
+
+
+
+## 拦截器
+
+
 
 
 

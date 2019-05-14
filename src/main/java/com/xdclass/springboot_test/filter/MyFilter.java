@@ -1,6 +1,5 @@
 package com.xdclass.springboot_test.filter;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -26,6 +25,7 @@ public class MyFilter implements Filter {
         HttpServletRequest res = (HttpServletRequest) servletRequest;
         HttpServletResponse rep = (HttpServletResponse) servletResponse;
         String userName = res.getParameter("userName");
+//        System.out.println("userName: " + userName);
         if ("tianer".equals(userName)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
