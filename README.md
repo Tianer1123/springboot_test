@@ -496,7 +496,7 @@ public class DemoApplication {
 
 # 什么是javaBean
 
-**avaBean是一个遵循特定写法的Java类**，它通常具有如下特点：
+**JavaBean是一个遵循特定写法的Java类**，它通常具有如下特点：
 
 1. 这个Java类必须具有一个无参的构造函数。
 2. 属性必须私有化。
