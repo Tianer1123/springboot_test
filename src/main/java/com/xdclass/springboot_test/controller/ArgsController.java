@@ -10,12 +10,20 @@ import java.util.Map;
 
 @Controller
 public class ArgsController {
-    Map<String, String> res = new HashMap<>();
+    private Map<String, String> res = new HashMap<>();
     @GetMapping("/v1")
     @ResponseBody
     public Object getParams(@RequestParam String arg1, String arg2) {
         res.put("arg1", arg1);
         res.put("arg2", arg2);
+        return res;
+    }
+
+    @GetMapping("/api/testFilter")
+    @ResponseBody
+    public Object testFilter(@RequestParam String userName, String passWord) {
+        res.put("userName", userName);
+        res.put("passWord", passWord);
         return res;
     }
 }

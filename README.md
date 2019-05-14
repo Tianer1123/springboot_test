@@ -494,5 +494,112 @@ public class DemoApplication {
 }
 ```
 
+# 什么是javaBean
+
+**avaBean是一个遵循特定写法的Java类**，它通常具有如下特点：
+
+1. 这个Java类必须具有一个无参的构造函数。
+2. 属性必须私有化。
+3. 私有化的属性必须通过public类型的方法暴露给其它程序，并且方法的命名也必须遵守一定的命名规范。
+
+# Filter过滤器
+
+> 举个例子: 人-->检票员（filter）-->景点
+
+Servlet3.0提供新的自定义Filter的方式：
+
+1. 使用Servlet3.0注解进行配置。
+
+2. 启动类中添加 `@ServletComponentScan` 进行扫描。
+
+3. 新建一个Filter类， `implements Filter` , 实现对应的接口。
+
+4. `@WebFilter` 标记一个类为filter，被spring进行扫描。
+
+   ``` java
+    urlPatterns // 拦截规则，支持正则
+   ```
+
+5. 放行和拦截
+
+   ``` java
+   chain.doFilter; // 放行
+   resp.sendRedirect("/index.html"); // 拦截跳转
+   ```
+
+
+
+完整代码：
+
+``` java
+// 启动类
+@SpringBootApplication
+@ServletComponentScan
+public class SpringbootTestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringbootTestApplication.class, args);
+    }
+
+}
+```
+
+``` java
+// 自定义过滤器
+@WebFilter(urlPatterns = "/api/*", filterName = "MyFilter")
+public class MyFilter implements Filter {
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("init MyFilter");
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, 
+                         ServletResponse servletResponse, 
+                         FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("doFilter doFilter");
+        HttpServletRequest res = (HttpServletRequest) servletRequest;
+        HttpServletResponse rep = (HttpServletResponse) servletResponse;
+        String userName = res.getParameter("userName");
+        if ("tianer".equals(userName)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            rep.sendRedirect("/index.html");
+            return;
+        }
+
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("destroy MyFilter");
+    }
+}
+```
+
+```java
+// controller实现
+@GetMapping("/api/testFilter")
+@ResponseBody
+public Object testFilter(@RequestParam String userName, String passWord) {
+    res.put("userName", userName);
+    res.put("passWord", passWord);
+    return res;
+}
+```
+
+``` http
+// 访问连接
+http://localhost:8080/api/testFilter?userName=tianer&passWord=123
+```
+
+``` json
+// 返回结果
+{
+    passWord: "123",
+    userName: "tianer",
+}
+```
+
 
 
