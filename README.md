@@ -441,3 +441,58 @@ controller中抛出自定义异常：
     }
 ```
 
+# War包部署
+
+使用 `JMeter` 做性能测试。
+
+``` properties
+	<!-- 打jar包 -->
+	<packaging>jar</packaging>
+	<!-- ... -->
+```
+
+``` properties
+	<!-- 打war包 -->
+	<packaging>war</packaging>
+	<!-- ... -->
+```
+
+idea中在 Maven -> Lifecycle -> clean/install 双击打jar/war包，生成路径在 target 目录下。打war包的main函数与jar包不同，需要注意一下。
+
+
+
+``` java
+// jar包的main函数
+@SpringBootApplication
+public class SpringbootTestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringbootTestApplication.class, args);
+    }
+
+}
+```
+
+``` java
+// war包的main函数
+public class ServletInitializer extends SpringBootServletInitializer {
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(DemoApplication.class);
+    }
+
+}
+
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+
+}
+```
+
+
+
