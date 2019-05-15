@@ -26,4 +26,12 @@ public class ArgsController {
         res.put("passWord", passWord);
         return res;
     }
+
+    @GetMapping("/api2/test")
+    @ResponseBody
+    public Object testInterceptor(@RequestParam String userName, String passWord) {
+        res.put("userName", userName);
+        res.put("passWord", passWord);
+        return res;
+    }
 }

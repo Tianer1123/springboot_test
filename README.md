@@ -660,7 +660,42 @@ public class RequestListener implements ServletRequestListener {
 
 ## 拦截器
 
+SpringBoot2.x拦截器和旧版本拦截器区别：
 
+1. @Configuration
+   * SpringBoot旧版本： 继承自 `extends WebConfigurationAdapter`
+   * SpringBoot2.x 配置拦截器：`implements WebMvcConfigurer`
+
+2. 自定义拦截器 HandlerInterceptor
+   * preHandle: Controller调用之前。
+   * postHandle: Controller之后调用，如果Controller出现异常，不执行吃方法。
+   * afterCompletion: 无论是否有异常，该方法都会被执行，用于资源清理。
+3. 按照注册顺序进行拦截，先注册，先拦截。
+
+
+
+**拦截器不生效的常见问题：**
+
+1. 是否加了注解 `@Configuration`
+2. 拦截器路径是否有问题 ** 和 *
+3. 拦截器最后路径一定要 "/**"，如果是目录则是 /\*/
+
+## 过滤器和拦截器的区别
+
+Spring的拦截器与Servlet的Filter有相似之处，比如都能实现权限检查、日志记录等。不同的是：
+
+* Filter是基于函数回调 `doFilter()` ，而Interceptor则是基于AOP思想编程。
+
+* 使用范围不同：Filter是Servlet规范规定的，只能用于Web程序中。而拦截器既可以用于Web程序，也可以用于Application、Swing程序中。
+* 规范不同：Filter是在Servlet规范中定义的，是Servlet容器支持的。而拦截器是在Spring容器内的，是Spring框架支持的。
+* 使用的资源不同：同其他的代码块一样，拦截器也是一个Spring的组件，归Spring管理，配置在Spring文件中，因此能使用Spring里的任何资源、对象。例如Service对象、资源对象、事务管理等，通过IoC注入到拦截器即可；而Filter则不能。
+* 深度不同：Filter只在Servlet前后起作用。而拦截器能够深入到方法前后、异常抛出前后等，因此拦截器的使用具有更大的弹性。
+
+所以在Spring架构的程序中，要优先使用拦截器。
+
+**Filter和Interceptor的执行顺序**
+
+过滤前->拦截前->action执行->拦截后->过滤后
 
 
 
