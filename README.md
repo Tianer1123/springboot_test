@@ -680,6 +680,79 @@ SpringBoot2.x拦截器和旧版本拦截器区别：
 2. 拦截器路径是否有问题 ** 和 *
 3. 拦截器最后路径一定要 "/**"，如果是目录则是 /\*/
 
+
+
+具体代码实例：
+
+``` java
+// 自定义一个config文件添加拦截器
+
+@Configuration
+public class MyConfig implements WebMvcConfigurer {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/api2/*/**");
+//      添加多个拦截器
+//      registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/api2/*/**");
+        WebMvcConfigurer.super.addInterceptors(registry);
+    }
+}
+```
+
+
+
+``` java
+// 自定义拦截器
+public class LoginInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("=====>LoginInterceptor preHandle");
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println("=====>LoginInterceptor postHandle");
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println("=====>LoginInterceptor afterCompletion");
+    }
+}
+```
+
+``` java
+// controller测试
+@GetMapping("/api2/test")
+@ResponseBody
+public Object testInterceptor(@RequestParam String userName, String passWord) {
+    res.put("userName", userName);
+    res.put("passWord", passWord);
+    return res;
+}
+```
+
+``` http
+http://localhost:8080//api2/test?userName=1&passWord=123
+```
+
+``` verilog
+2019-05-15 14:14:39.625  INFO 1970 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-05-15 14:14:39.625  INFO 1970 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2019-05-15 14:14:39.632  INFO 1970 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+=====>LoginInterceptor preHandle
+=====>LoginInterceptor postHandle
+=====>LoginInterceptor afterCompletion
+========requestDestroyed========
+========requestInitialized========
+========requestDestroyed========
+2019-05-15 14:14:59.304  INFO 1970 --- [      Thread-23] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+destroy MyFilter
+```
+
+
+
 ## 过滤器和拦截器的区别
 
 Spring的拦截器与Servlet的Filter有相似之处，比如都能实现权限检查、日志记录等。不同的是：
