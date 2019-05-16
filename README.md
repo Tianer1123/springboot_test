@@ -159,9 +159,11 @@ fastdfs、阿里云oss、nginx自己搭建的简单文件服务器等等。
 
    选择 Build project automatically.
 
-2. ctrl+shift+alt+/ 到 registry
+2. windows: ctrl+shift+alt+/ 到 registry
 
    选择 compiler.automake.allow.when.app.running
+   
+   Mac: command+shift+a ，输入 registry
 
 
 
@@ -772,3 +774,50 @@ Spring的拦截器与Servlet的Filter有相似之处，比如都能实现权限�
 
 
 
+# starter
+
+[starter官网讲解](https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#using-boot-starter)
+
+**功能：** 通过pom.xml添加starter来简化依赖。
+
+`pom.xml` 常用的starter:
+
+``` properties
+spring-boot-starter-web
+spring-boot-starter-data-redis 
+spring-boot-starter-jdbc
+spring-boot-starter-data-mongodb
+spring-boot-starter-thymeleaf
+spring-boot-starter-freemarker
+```
+
+
+
+# 模板引擎
+
+## jsp（后端渲染，消耗性能）
+
+JSP(Java Server Pages) 动态网页技术，有服务器的JSP引擎来编译和执行，再讲生成的整个页面返回给客户端。
+
+优缺点：
+
+* 可以使用Java代码编写。
+* 支持表达式语言(el，jstl)
+* 内建函数
+* JSP->Servlet(占用JVM内存)
+* javaweb官方推荐
+* Springboot不推荐
+
+## freemarker
+
+FreeMarker Template Language(FTL) 文件一般保存为 xxx.ftl
+
+* 严格依赖MVC模式，不依赖Servlet容器(不占用JVM内存)
+* 内建函数
+
+## thymeleaf(主推)
+
+轻量级的模板引擎(负责业务逻辑的不推荐，解析DOM或者XML会占用比较多的内存)
+
+* 可以直接在浏览器打开且显示正确的模板页面
+* 直接是以.html结尾，可以直接编辑
