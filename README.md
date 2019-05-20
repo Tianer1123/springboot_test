@@ -38,7 +38,9 @@
 
 - **HttpServletRequest request:** 自动注入获取参数
 
+# @RestController
 
+`@RestController：` 返回json格式数据。
 
 ## jackson注解
 
@@ -197,38 +199,47 @@ fastdfs、阿里云oss、nginx自己搭建的简单文件服务器等等。
 
 2. 通过实体类注入配置信息：
 
+   ``` properties
+   <!--   使用自己的配置信息     -->
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-configuration-processor</artifactId>
+       <optional>true</optional>
+   </dependency>
+   ```
+   
    ``` java
    // 实体类的设置，类属性名称与配置文件一致
-   @Component
+@Component
    @PropertySource("classpath:application.properties")
    @ConfigurationProperties(prefix = "test")
    public class ServerConfig {
        // 类属性名要与配置文件一致，不需要加@Value()注解。
        String name;
-       String domain;
+    String domain;
    }
    ```
-
+   
    ``` properties
    # application.properties中的配置
    test.name=spring-test
    test.domain=www.spring-test.com
    ```
-
+   
    ``` java
    // Controller 中的使用
-   @Autowired
+@Autowired
    ServerConfig serverConfig;
-   
+
    @RequestMapping("/v2")
    @ResponseBody
    public Object getServer() {
        return serverConfig;
    }
    ```
-
+   
    访问:http://localhost:8080/v2 返回的结果是：
-
+   
    ``` json
    {
    	name: "spring-test",
@@ -274,27 +285,27 @@ WHERE RN BETWEEN 21 AND 40
 
 ``` java
  @Test
-    public void contextLoads() {
-        System.out.println("Hello!");
-        TestCase.assertEquals(1, 1);
-    }
+public void contextLoads() {
+    System.out.println("Hello!");
+    TestCase.assertEquals(1, 1);
+}
 
-    @Test
-    public void contextLoads2() {
-        System.out.println("contextLoads2");
-    }
+@Test
+public void contextLoads2() {
+    System.out.println("contextLoads2");
+}
 
-    // test之前调用
-    @Before
-    public void testBefroe() {
-        System.out.println("before");
-    }
+// test之前调用
+@Before
+public void testBefroe() {
+    System.out.println("before");
+}
 
-    // test之后调用
-    @After
-    public void testAfter() {
-        System.out.println("after");
-    }
+// test之后调用
+@After
+public void testAfter() {
+    System.out.println("after");
+}
 ```
 
 ## MockMvc模拟http请求
@@ -817,7 +828,112 @@ FreeMarker Template Language(FTL) 文件一般保存为 xxx.ftl
 
 ## thymeleaf(主推)
 
-轻量级的模板引擎(负责业务逻辑的不推荐，解析DOM或者XML会占用比较多的内存)
+轻量级的模板引擎(负责复杂业务逻辑的不推荐，解析DOM或者XML会占用比较多的内存)
 
 * 可以直接在浏览器打开且显示正确的模板页面
 * 直接是以.html结尾，可以直接编辑
+
+## 使用freemarker
+
+``` xml
+<!--freemarker模板引擎-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-freemarker</artifactId>
+</dependency>
+```
+
+``` properties
+# 是否开启freemarker缓存，本地为false，生产建议为true
+spring.freemarker.cache=false
+
+spring.freemarker.charset=utf-8
+spring.freemarker.allow-request-override=false
+spring.freemarker.check-template-location=true
+
+# 类型
+spring.freemarker.content-type=text/html
+
+spring.freemarker.expose-request-attributes=true
+spring.freemarker.expose-session-attributes=true
+
+# 文件后缀
+spring.freemarker.suffix=.ftl
+# 路径
+spring.freemarker.template-loader-path=classpath:/templates/
+```
+
+# 数据库访问持久化
+
+## 访问数据库的几种方式
+
+1. 原始的SQL：
+
+   缺点是：开发流程麻烦。
+
+   1. 注册驱动/加载驱动。
+
+      ``` java
+      Class.forName("com.mysql.jdbc.Driver");
+      ```
+
+   2. 建立连接。
+
+      ``` java
+      Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbname", "root", "root");
+      ```
+
+   3. 创建Statement。
+
+   4. 执行SQL语句。
+
+   5. 处理结果集。
+
+   6. 关闭连接，释放资源。
+
+2. apache dbutils框架
+
+   比原始的SQL方式简单一点。
+
+   [apache dbutils官网。](https://commons.apache.org/proper/commons-dbutils/)
+
+3. jpa框架
+
+   Spring-data-jpa
+
+   jpa在复杂的查询的时候性能不太好。
+
+4. Hiberante框架
+
+   **ORM：** 对象关系映射，Object Relational Mapping
+
+   企业大部分使用Hiberante框架。
+
+5. Mybatis框架
+
+   互联网企业大部分使用Mybatis框架。
+
+   半ORM框架，不提供对象和关系的直接映射。
+
+## 配置mybatis
+
+添加mybatis的相关依赖。
+
+``` xml
+<!--Mybatis配置:Mybatis,mysql,druid-->
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>1.3.2</version>
+</dependency>
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+</dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.1.8</version>
+</dependency>
+```
+
