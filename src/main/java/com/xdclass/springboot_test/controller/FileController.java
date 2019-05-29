@@ -1,6 +1,7 @@
 package com.xdclass.springboot_test.controller;
 
 import com.xdclass.springboot_test.domain.JsonData;
+import com.xdclass.springboot_test.domain.Person;
 import com.xdclass.springboot_test.domain.ServerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
+
+import static com.xdclass.springboot_test.utils.ExcelUtils.importExcel;
 
 @Controller
 @RequestMapping
@@ -69,5 +74,24 @@ public class FileController {
     @ResponseBody
     public Object getServer() {
         return serverConfig;
+    }
+
+
+    /**
+     * 导入Excel
+     * @param file 导入的Excel文件
+     * @param request  httpRequest
+     * @return
+     */
+    @RequestMapping(value = "/import")
+    @ResponseBody
+    public List importE(@RequestParam("excel")MultipartFile file, HttpServletRequest request) throws Exception {
+        List<Person> personList = importExcel(file, 0, 1, Person.class);
+        for (Person p: personList) {
+            System.out.println(p.getName());
+            System.out.println(p.getSex());
+            System.out.println(p.getBirthday());
+        }
+        return personList;
     }
 }

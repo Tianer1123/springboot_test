@@ -937,3 +937,59 @@ spring.freemarker.template-loader-path=classpath:/templates/
 </dependency>
 ```
 
+## 定义User类
+
+``` java
+@Data
+public class User {
+    private int id;
+    private String name;
+    private String phone;
+    private int age;
+    private Date createTime;
+}
+```
+
+``` sql
+-- sql
+create database xdclass;
+create table `user` (
+    `id` int(11) unsigned not null auto_increment,
+    `name` varchar(128) default null comment '名称',
+    `phone` varchar(16) default null comment '用户手机号',
+    `create_time` datetime default null comment '创建时间',
+    `age` int(4) default null comment '年龄',
+    PRIMARY KEY (`id`)
+) engine=InnoDB AUTO_INCREMENT=18 default charset=utf8;
+```
+
+``` properties
+# 数据源和mybatis配置
+spring.datasource.url=jdbc:mysql://localhost:3306/xdclass?useUnicode=true&characterEncoding=utf-8
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+启动类中添加注解
+
+``` java
+@MapperScan("com.xdclass.springboot_test.mapper")
+```
+
+
+
+# Lombok插件
+
+生成`Setter`，`Getter`插件。
+
+``` xml
+<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.6</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+## 
