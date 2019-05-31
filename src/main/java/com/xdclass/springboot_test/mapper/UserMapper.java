@@ -7,10 +7,15 @@ package com.xdclass.springboot_test.mapper;
 
 import com.xdclass.springboot_test.domain.User;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.springframework.stereotype.Component;
 
+@Mapper
+@Component
 public interface UserMapper {
-    @Insert("INSERT INTO user(NAME, PHONE, CREATE_TIME, AGE) VALUES (#{name}, #{phone}, #{create_time}, #{age})")
+    // 使用#{},不要使用${},因为存在注入风险
+    @Insert("INSERT INTO user(NAME, PHONE, CREATE_TIME, AGE) VALUES (#{name}, #{phone}, #{createTime}, #{age})")
     @Options(useGeneratedKeys = true, keyColumn = "id")
     int inseart(User user);
 }

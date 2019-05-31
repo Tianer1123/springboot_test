@@ -12,7 +12,7 @@ import java.io.IOException;
  * @Description: 自定义filter
  * @CreateTime: Created in 14:05 2019/5/14
  */
-@WebFilter(urlPatterns = "/api/*", filterName = "MyFilter")
+//@WebFilter(urlPatterns = "/api/*", filterName = "MyFilter")
 public class MyFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

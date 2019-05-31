@@ -16,8 +16,8 @@ import java.util.Date;
 public class Person implements Serializable {
     @Excel(name = "姓名", isImportField = "true_st")
     private String name;
-    @Excel(name = "性别", replace = {"男_1", "女_2"}, orderNum = "1", isImportField = "true_st")
+    @Excel(name = "性别", replace = {"男_1", "女_2"}, isImportField = "true_st")
     private String sex;
-    @Excel(name = "生日", exportFormat = "yyyy-MM-dd", importFormat = "yyyy-MM-dd", orderNum = "2", isImportField = "true_st")
+    @Excel(name = "生日", exportFormat = "yyyy-MM-dd", importFormat = "yyyy-MM-dd", isImportField = "true_st")
     private Date birthday;
 }

@@ -976,6 +976,62 @@ spring.datasource.password=root
 @MapperScan("com.xdclass.springboot_test.mapper")
 ```
 
+Mapper中：
+
+``` java
+@Mapper
+@Component
+public interface UserMapper {
+    // 使用#{},不要使用${},因为存在注入风险
+    @Insert("INSERT INTO user(NAME, PHONE, CREATE_TIME, AGE) VALUES (#{name}, #{phone}, #{create_time}, #{age})")
+    @Options(useGeneratedKeys = true, keyColumn = "id")
+    int inseart(User user);
+}
+```
+
+Service实现：
+
+``` java
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserMapper mapper;
+
+    @Override
+    public int add(User user) {
+        mapper.inseart(user);
+        int id = user.getId();
+        return id;
+    }
+}
+```
+
+Controller实现
+
+``` java
+// RestController 返回json对象
+@RestController
+@RequestMapping(value = "/api/v1/user")
+public class UserController {
+    @Autowired
+    private UserService service;
+
+    @GetMapping(value = "/add")
+    public Object add() {
+        User user = new User();
+        user.setAge(11);
+        user.setCreateTime(new Date());
+        user.setName("xdClass");
+        user.setPhone("100001110");
+        int id = service.add(user);
+        return user;
+    }
+}
+```
+
+## Mybatis控制台打印SQL语句
+
 
 
 # Lombok插件
