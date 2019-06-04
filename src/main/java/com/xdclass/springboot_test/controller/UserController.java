@@ -7,13 +7,16 @@ package com.xdclass.springboot_test.controller;
 
 import com.xdclass.springboot_test.domain.User;
 import com.xdclass.springboot_test.service.UserService;
+import com.xdclass.springboot_test.task.AsyncTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping(value = "/api/v1/user")
@@ -51,6 +54,29 @@ public class UserController {
     public Object redisGet() {
         String value = redisTpl.opsForValue().get("name");
         return value;
+    }
+
+    @Autowired
+    private AsyncTask task;
+    @GetMapping(value = "/task")
+    public Object exeTask() throws Exception {
+        long begin = System.currentTimeMillis();
+//        task.task1();
+//        task.task2();
+//        task.task3();
+        Future<String> task4 = task.task4();
+        Future<String> task5 = task.task5();
+        Future<String> task6 = task.task6();
+
+        for (;;) {
+            if (task4.isDone() && task5.isDone() && task6.isDone()) {
+                break;
+            }
+        }
+        long end = System.currentTimeMillis();
+        long total = end - begin;
+        System.out.println("完成：" + total);
+        return total;
     }
 
 }

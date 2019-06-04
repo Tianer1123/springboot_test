@@ -1237,7 +1237,67 @@ public Object redisGet() {
 }
 ```
 
+# SpringBoot定时任务和异步任务处理
+
+## 定时任务 schedule
+
+常见定时任务：
+
+1. Java自带的定时任务 `java.util.Timer` 类。不推荐。
+
+   * timer:配置麻烦，时间延后。
+   * timerTask:
+
+2. Quartz框架。
+
+   * 配置简单。
+   * xml或者注解。
+
+3. SpringBoot注解方式：
+
+   * 在启动类中添加@EnableScheduling定时任务，自动扫描。
+
+   * 定时任务业务类添加 @Component被容器扫描。
+   * 定时任务方法中加 @Scheduled(fixedRate = 2000) 定时执行方法。
+
+   
+
+代码实现：
+
+``` java
+@Component
+public class TestTask {
+    @Scheduled(fixedRate = 2000) // 两秒执行一次任务
+    public void test() {
+        System.out.println("当前时间为：" + new Date());
+    }
+}
+```
 
 
 
+## 定时任务配置
+
+1. cron 定时任务表达式 `@Scheduled(cron="*/1 * * * * *")` 表示每秒。
+2. fixedrate: 定时多久执行一次(上一次 **开始执行** 点后2秒)。
+3. fixedDelay: 上一次 **执行结束** 时间点后2秒再次执行。
+4. fixedDelayString: 字符串形式，可以通过配置文件制定。
+
+
+
+## 异步任务
+
+1. 使用场景： log、发邮件、短信……等。
+
+2. 启动类里面添加 `@EnableAsync` 注解开启功能，自动扫描。
+
+3. 定义异步任务类并使用 `@Component` 标记组件被容器扫描，异步方法加上 `@Async`。
+
+   注意点：
+
+   1. 把异步任务封装到类中，不要写到controller中。
+   2. 增加`Future<String> ` 返回结果 `AsyncResult<String>("task执行完成")`。
+   3. 如果需要拿到结果，需要判断全部的 `task.isDone()`。
+
+4. 通过注入的方式，注入到controller中，如果测试前后区别，将@Async注释掉。
 
