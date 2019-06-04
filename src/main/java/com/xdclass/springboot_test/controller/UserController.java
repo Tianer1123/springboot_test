@@ -31,4 +31,10 @@ public class UserController {
         return user;
     }
 
+    @GetMapping(value = "/account")
+    public Object account() {
+        User user = service.testTraction();
+        return user;
+    }
+
 }

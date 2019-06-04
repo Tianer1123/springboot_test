@@ -216,7 +216,7 @@ fastdfs、阿里云oss、nginx自己搭建的简单文件服务器等等。
    public class ServerConfig {
        // 类属性名要与配置文件一致，不需要加@Value()注解。
        String name;
-    String domain;
+    		String domain;
    }
    ```
    
@@ -253,7 +253,7 @@ fastdfs、阿里云oss、nginx自己搭建的简单文件服务器等等。
 # Oracle分页查询
 
 ``` sql
--- 这种写反比较高效
+-- 这种写法比较高效
 SELECT * FROM  
 (  
 SELECT A.*, ROWNUM RN  
@@ -1032,7 +1032,39 @@ public class UserController {
 
 ## Mybatis控制台打印SQL语句
 
+``` properties
+# 使用阿里巴巴druid数据源，默认使用自带的
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
 
+# 开启控制台打印sql
+mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+```
+
+## 事务，隔离级别，传播行为
+
+**事务** ： 单机事务，分布式事务
+
+**隔离级别** ： 
+
+- Serializable: 最严格，串行处理，消耗资源大。
+- Repeatable Read: 保证一个事务不会修改已经有另一个事务读取但未提交(回滚)的数据。
+- Read Committed: 大多数主流数据库的默认事务登记
+- Read Uncommitted: 保证读取过程中不会读取到非法数据。
+
+**传播行为：**
+
+- PROPAGATION_REQUIRED: 支持当前事务，如果当前没有事务，就新建一个事务，
+- PROPAGATION_SUPPORTS: 支持当前事务，如果当前没有事务，就以非事务方式执行。
+- PROPAGATION_MANDATORY: 支持当前事务，如果当前没有事务，抛异常。
+- PROPAGATION_REQUIRES_NEW:  支持当前事务，如果当前没有事务，就把当前事务挂起。两个事务之间没有关系，一个异常，一个提交，不会同时回滚。
+- PROPAGATION_NOT_SUPPORTED: 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+- PROPAGATION_NEVER: 以非事务方式执行，如果当前存在事务，则抛异常。
+
+**事务注解：**
+
+```java
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
+```
 
 # Lombok插件
 
@@ -1048,4 +1080,64 @@ public class UserController {
 </dependency>
 ```
 
-## 
+## Lombok的@Accessors是什么作用
+
+Accessor的中文含义是存取器，`@Accessors`用于配置`getter`和`setter`方法的生成结果。
+
+### **fluent**
+
+fluent的中文含义是流畅的，设置为true，则getter和setter方法的方法名都是基础属性名，且setter方法返回当前对象。如下：
+
+``` java
+@Data
+@Accessors(fluent = true)
+public class User {
+    private Long id;
+    private String name;
+    
+    // 生成的getter和setter方法如下，方法体略
+    public Long id() {}
+    public User id(Long id) {}
+    public String name() {}
+    public User name(String name) {}
+}
+```
+
+### **chain**
+
+chain的中文含义是链式的，设置为true，则setter方法返回当前对象。如下:
+
+``` java
+@Data
+@Accessors(chain = true)
+public class User {
+    private Long id;
+    private String name;
+    
+    // 生成的setter方法如下，方法体略
+    public User setId(Long id) {}
+    public User setName(String name) {}
+}
+```
+
+### **prefix**
+
+prefix的中文含义是前缀，用于生成getter和setter方法的字段名会忽视指定前缀（遵守驼峰命名）。如下:
+
+``` java
+@Data
+@Accessors(prefix = "p")
+class User {
+	private Long pId;
+	private String pName;
+	
+	// 生成的getter和setter方法如下，方法体略
+	public Long getId() {}
+	public void setId(Long id) {}
+	public String getName() {}
+	public void setName(String name) {}
+}
+```
+
+
+

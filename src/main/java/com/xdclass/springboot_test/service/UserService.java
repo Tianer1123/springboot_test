@@ -9,4 +9,10 @@ import com.xdclass.springboot_test.domain.User;
 
 public interface UserService {
     int add(User user);
+
+    /**
+     * 测试事务
+     * @return id值
+     */
+    User testTraction();
 }

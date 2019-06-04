@@ -7,6 +7,7 @@ package com.xdclass.springboot_test.domain;
 
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -16,5 +17,6 @@ public class User {
     private String name;
     private String phone;
     private int age;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 }
