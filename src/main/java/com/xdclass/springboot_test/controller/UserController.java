@@ -8,6 +8,7 @@ package com.xdclass.springboot_test.controller;
 import com.xdclass.springboot_test.domain.User;
 import com.xdclass.springboot_test.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,9 @@ import java.util.Date;
 public class UserController {
     @Autowired
     private UserService service;
+
+    @Autowired
+    private StringRedisTemplate redisTpl;
 
     @GetMapping(value = "/add")
     public Object add() {
@@ -35,6 +39,18 @@ public class UserController {
     public Object account() {
         User user = service.testTraction();
         return user;
+    }
+
+    @GetMapping(value = "/redis/add")
+    public Object redisAdd() {
+        redisTpl.opsForValue().set("name", "lilei");
+        return "OK";
+    }
+
+    @GetMapping(value = "/redis/get")
+    public Object redisGet() {
+        String value = redisTpl.opsForValue().get("name");
+        return value;
     }
 
 }

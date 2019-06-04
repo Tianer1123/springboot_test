@@ -1141,3 +1141,103 @@ class User {
 
 
 
+# 数据格式校验注解
+
+## 为空校验
+
+1. @Null   验证对象是否为**null**  
+2. @NotNull验证对象是否不为**null**, 无法查检长度为0的字符串  
+3. @NotBlank 检查约束字符串是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格.  
+4. @NotEmpty 检查约束元素是否为NULL或者是EMPTY，用在集合类上面
+
+## **Booelan检查**
+
+1. @AssertTrue 验证 Boolean 对象是否为 **true**   
+2. @AssertFalse验证 Boolean 对象是否为 **false**  
+
+## **长度检查**
+
+1. @Size(min=, max=) 验证对象（Array,Collection,Map,String）长度是否在给定的范围之内。可以验证集合内元素的多少。  
+2. @Length(min=, max=) Validates that the annotated string is between min and max included.主要用于String类型
+
+## 日期检查
+
+1. @Past   验证 Date 和 Calendar 对象是否在当前时间之前    
+2. @Future 验证 Date 和 Calendar 对象是否在当前时间之后    
+3. @Pattern验证 String 对象是否符合正则表达式的规则
+
+## **数值检查**
+
+1. 
+   @Min            验证 Number 和 String 对象是否大等于指定的值    
+2. @Max            验证 Number 和 String 对象是否小等于指定的值    
+3. @DecimalMax 被标注的值必须不大于约束中指定的最大值. 这个约束的参数是一个通过BigDecimal定义的最大值的字符串表示.小数存在精度  
+4. @DecimalMin 被标注的值必须不小于约束中指定的最小值. 这个约束的参数是一个通过BigDecimal定义的最小值的字符串表示.小数存在精度  
+5. @Digits     验证 Number 和 String 的构成是否合法    
+6. @Digits(integer=,fraction=) 验证字符串是否是符合指定格式的数字，interger指定整数精度，fraction指定小数精度。
+
+## **其他**
+
+1. @Valid 递归的对关联对象进行校验, 如果关联对象是个集合或者数组,那么对其中的元素进行递归校验,如果是一个map,则对其中的值部分进行校验.(是否进行递归验证)  
+2. @CreditCardNumber信用卡验证  
+3. @Email  验证是否是邮件地址，如果为**null**,不进行验证，算通过验证。  
+4. @ScriptAssert(lang= ,script=, alias=)  
+5. @URL(protocol=,host=, port=,regexp=, flags=)  
+6. @Range(min=, max=) Checks whether the annotated value lies between (inclusive) the specified minimum and maximum.  
+7. @Range(min=10000,max=50000,message="range.bean.wage")  
+
+# Redis
+
+pom.xml
+
+``` xml
+<!--redis-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+application.properties
+
+``` properties
+# redis基础配置
+spring.redis.database=0
+spring.redis.host=192.168.3.221
+spring.redis.port=6379
+# 连接超时时间，单位ms
+spring.redis.timeout=3000
+
+# redis连接池配置
+# 连接池中最大空闲连接，默认是8
+spring.redis.jedis.pool.max-idle=200
+# 连接池中最小空闲连接，默认是0
+spring.redis.jedis.pool.min-idle=200
+# 等待可用连接的最大时间，单位ms，默认值-1，表示用不超时
+spring.redis.jedis.pool.max-wait=1000
+# -1表示不限制，pool已经分配了MaxActive个Jedis的实例，此时pool的状态时已耗尽。
+spring.redis.jedis.pool.max-active=2000
+```
+
+简单测试：Controller
+
+``` java
+@Autowired
+private StringRedisTemplate redisTpl;
+@GetMapping(value = "/redis/add")
+public Object redisAdd() {
+    redisTpl.opsForValue().set("name", "lilei");
+    return "OK";
+}
+
+@GetMapping(value = "/redis/get")
+public Object redisGet() {
+    String value = redisTpl.opsForValue().get("name");
+    return value;
+}
+```
+
+
+
+
+
