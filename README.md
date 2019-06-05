@@ -1413,7 +1413,7 @@ log4j日志配置转logback: [https://logback.qos.ch/translator/](https://logbac
 
 
 
-Logback 配置文件推荐使用： logback_spring.xml
+Logback 配置文件推荐使用： [logback_spring.xml](https://github.com/Tianer1123/springboot_test/blob/master/src/main/resources/logback-spring.xml)
 
 注释：
 
