@@ -8,8 +8,6 @@ package com.xdclass.springboot_test.task;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Component
 public class TestTask {
     @Scheduled(fixedRate = 2000) // 两秒执行一次任务

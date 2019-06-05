@@ -1381,3 +1381,48 @@ public Object exeTask() throws Exception {
 }
 ```
 
+# Logback日志框架
+
+SpringBoot为什么推荐使用`Logback` ，有的日志框架性能太低，日志阻塞，导致QPS（query per second 每秒查询率）上不去。
+
+
+
+1） **常用的日志框架：** `slf4j`，`log4j`，`logback`，`common-logging`等。
+
+2） **logback介绍：**`log4j`的升级版，不能单独使用，推荐是和slf4j配合使用。
+
+​		`logback`分成三个模块： `logback-core`, `logback-classic`, `logback-access`;
+
+​		`logback-core`是基础模块。
+
+3）**Logback的核心对象：** 
+
+​		**Logger:** 日志记录器。
+
+​		**Appender:** 指定日志输出的目的地，目的地可以是控制台或者文件。
+
+​		**Layout:** 日志布局，格式化日志信息的输出。
+
+4）**日志级别：** DEBUG < INFO < WARN < ERROR 。
+
+
+
+log4j日志配置转logback: [https://logback.qos.ch/translator/](https://logback.qos.ch/translator/)
+
+日志官网: [https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-logging](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-logging)
+
+
+
+Logback 配置文件推荐使用： logback_spring.xml
+
+注释：
+
+```xml
+<configuration> <!--三个子节点-->
+	<appender></appender>
+  <logger></logger>
+  <!--root节点放到最后-->
+  <root></root>
+</configuration>
+```
+

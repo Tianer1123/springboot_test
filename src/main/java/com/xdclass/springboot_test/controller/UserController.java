@@ -8,9 +8,9 @@ package com.xdclass.springboot_test.controller;
 import com.xdclass.springboot_test.domain.User;
 import com.xdclass.springboot_test.service.UserService;
 import com.xdclass.springboot_test.task.AsyncTask;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,8 @@ import java.util.Date;
 import java.util.concurrent.Future;
 
 @RestController
-@RequestMapping(value = "/api/v1/user")
+@RequestMapping(value = "/api/v1")
+@Slf4j
 public class UserController {
     @Autowired
     private UserService service;
@@ -77,6 +78,15 @@ public class UserController {
         long total = end - begin;
         System.out.println("完成：" + total);
         return total;
+    }
+
+    @GetMapping(value = "/log")
+    public Object testLog() {
+        log.debug("this is debug");
+        log.info("this is info");
+        log.warn("this is warn");
+        log.error("this is error");
+        return "ok";
     }
 
 }
