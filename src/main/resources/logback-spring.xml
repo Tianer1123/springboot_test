@@ -14,9 +14,9 @@
         <!--日志级别过滤器-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <!--Info日志级别过滤掉ERROR日志级别的日志-->
-            <level>ERROR</level>
-            <onMatch>DENY</onMatch>
-            <onMismatch>ACCEPT</onMismatch>
+            <!--<level>ERROR</level>-->
+            <!--<onMatch>DENY</onMatch>-->
+            <!--<onMismatch>ACCEPT</onMismatch>-->
         </filter>
         <encoder>
             <pattern>
@@ -51,7 +51,8 @@
     </appender>
 
     <!--控制总的输出级别-->
-    <root level="DEBUG">
+    <!--<root level="DEBUG">-->
+    <root level="INFO">
         <appender-ref ref="consoleApp"/>
         <appender-ref ref="fileInfoApp"/>
         <appender-ref ref="fileErrorApp"/>

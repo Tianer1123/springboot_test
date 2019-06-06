@@ -1426,3 +1426,55 @@ Logback 配置文件推荐使用： [logback_spring.xml](https://github.com/Tian
 </configuration>
 ```
 
+# Spirngboot整合Elasticsearch
+
+[https://docs.spring.io/spring-data/elasticsearch/docs/3.1.8.RELEASE/reference/html/](https://docs.spring.io/spring-data/elasticsearch/docs/3.1.8.RELEASE/reference/html/)
+
+github有版本匹配说明。
+
+
+
+# java8 stream()编程
+
+``` java
+ public Object testStream() {
+        User u1 = new User(1, "张三", "10010", 23, new Date());
+        User u2 = new User(2, "李四", "10011", 24, new Date());
+        User u3 = new User(3, "王五", "10012", 25, new Date());
+        User u4 = new User(4, "赵六", "10013", 26, new Date());
+        User u5 = new User(5, "周七", "10014", 27, new Date());
+        User u6 = new User(6, "郑八", "10015", 28, new Date());
+
+        List<User> userList = new ArrayList<>();
+        userList.add(u1);
+        userList.add(u2);
+        userList.add(u3);
+        userList.add(u4);
+        userList.add(u5);
+        userList.add(u6);
+
+        // 获取ids列表
+        List<String> ids = userList.stream().map(user -> String.valueOf(user.getId())).collect(Collectors.toList());
+        // 获取 id:name hashMap
+        Map<Integer, String> map = userList.stream().collect(Collectors.toMap(User::getId, User::getName));
+        // key 为 id, value 为 user 对象
+        Map<Integer, User> userMap = userList.stream().collect(Collectors.toMap(User::getId, user -> user));
+        // list中删除id为1的对象
+        userList.removeIf(user -> String.valueOf(user.getId()).equals("1"));
+        // 根据电话重新排序
+        Collections.sort(userList, (o1, o2) -> {
+            if (o1.getPhone().compareTo(o2.getPhone()) > 0) {
+                return 1;
+            } else if (o1.getPhone().compareTo(o2.getPhone()) < 0) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        // userList根据某个字段过滤排序
+        Map<String, User> filterMap = userList.stream().collect(Collectors.toMap(user -> "李四".equals(user.getName()) ? user.getPhone() : user.getName(), user -> user));
+
+        return filterMap;
+    }
+```
+
