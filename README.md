@@ -1478,3 +1478,217 @@ github有版本匹配说明。
     }
 ```
 
+# 消息队列RockketMQ、ActiveMQ
+
+## JMS介绍
+
+1. **什么是JMS:** Java消息服务(java message service),Java平台中关于面向消息中间件的接口。
+
+2. jms是一种与厂商无关的API，用来访问消息收发系统消息，它类似JDBC(Java Database Connectivity)。这里，JDBC可以用来访问许多不同关系数据库的API。
+
+3. 使用场景：
+
+   1. 跨平台
+
+   2. 多语言
+
+   3. 多项目
+
+   4. 解耦
+
+   5. 分布式事务
+
+   6. 流量控制
+
+   7. 最终一致性
+
+   8. RPC调用
+
+      上下游对接，数据源变动->通知下属
+
+4. 概念
+
+   1. JMS提供者： Apache ActiveMQ、RabbitMQ、Kafka、Notify、MetaQ、RocketMQ
+   2. JMS生产者
+   3. JMS消费者
+   4. JMS消息
+   5. JMS队列
+   6. JMS主题
+
+   JMS消息通常有两种类型：点对点类型(point-to-point)，发布/订阅类型(Publish/Subscribe)
+
+5. 编程模型
+
+   MQ中需要使用的一些类
+
+   1. ConnectionFactory: 连接工厂，JMS用它创建连接。
+   2. Connection: JMS客户端到JMS Provider的链接。
+   3. Session: 一个发送或接受消息的线程。
+   4. Destination: 消息目的地，消息发送给谁。
+   5. MessageConsumer/MessageProducer: 消息接收者，消费者。
+
+## ActiveMQ5.x
+
+特性:
+
+> - Supports a variety of Cross Language Clients and Protocols from Java, C, C++, C#, Ruby, Perl, Python, PHP
+>   - [OpenWire](http://activemq.apache.org/openwire) for high performance clients in Java, C, C++, C#
+>   - [Stomp](http://activemq.apache.org/stomp) support so that clients can be written easily in C, Ruby, Perl, Python, PHP, ActionScript/Flash, Smalltalk to talk to ActiveMQ as well as any other popular Message Broker
+>   - [AMQP](http://activemq.apache.org/amqp) v1.0 support
+>   - [MQTT](http://activemq.apache.org/mqtt) v3.1 support allowing for connections in an IoT environment.
+> - full support for the [Enterprise Integration Patterns](http://activemq.apache.org/enterprise-integration-patterns) both in the JMS client and the Message Broker
+> - Supports many [advanced features](http://activemq.apache.org/features) such as [Message Groups](http://activemq.apache.org/message-groups), [Virtual Destinations](http://activemq.apache.org/virtual-destinations), [Wildcards](http://activemq.apache.org/wildcards) and [Composite Destinations](http://activemq.apache.org/composite-destinations)
+> - Fully supports JMS 1.1 and J2EE 1.4 with support for transient, persistent, transactional and XA messaging
+> - [Spring Support](http://activemq.apache.org/spring-support) so that ActiveMQ can be easily embedded into Spring applications and configured using Spring’s XML configuration mechanism
+> - Tested inside popular J2EE servers such as TomEE,Geronimo, JBoss, GlassFish and WebLogic
+>   - Includes [JCA 1.5 resource adaptors](http://activemq.apache.org/resource-adapter) for inbound & outbound messaging so that ActiveMQ should auto-deploy in any J2EE 1.4 compliant server
+> - Supports pluggable [transport protocols](http://activemq.apache.org/uri-protocols) such as [in-VM](http://activemq.apache.org/how-do-i-use-activemq-using-in-jvm-messaging), TCP, SSL, NIO, UDP, multicast, JGroups and JXTA transports
+> - Supports very fast [persistence](http://activemq.apache.org/persistence) using JDBC along with a high performance journal
+> - Designed for high performance clustering, client-server, peer based communication
+> - [REST](http://activemq.apache.org/rest) API to provide technology agnostic and language neutral web based API to messaging
+> - [Ajax](http://activemq.apache.org/ajax) to support web streaming support to web browsers using pure DHTML, allowing web browsers to be part of the messaging fabric
+> - [CXF and Axis Support](http://activemq.apache.org/axis-and-cxf-support) so that ActiveMQ can be easily dropped into either of these web service stacks to provide reliable messaging
+> - Can be used as an in memory JMS provider, ideal for [unit testing JMS](http://activemq.apache.org/how-to-unit-test-jms-code)
+
+
+
+[官网地址：http://activemq.apache.org/index.html](http://activemq.apache.org/index.html)
+
+
+
+面板:
+
+* Name : 队列名称。
+* Number Of Pending Messages: 等待消费的消息个数。
+* Number Of Consumers: 当前连接的消费者数目。
+* Messages Enqueued: 进入消息队列的总个数，包括出队列的和待消费的，这个数量只增不减。
+* Messages Dequeued: 已经消费的消息数量。
+
+### SpringBoot2.x整合ActiveMQ
+
+[官网：https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#boot-features-activemq](https://docs.spring.io/spring-boot/docs/2.1.4.RELEASE/reference/htmlsingle/#boot-features-activemq)
+
+依赖：
+
+``` xml
+<!--整合消息队列-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-activemq</artifactId>
+</dependency>
+<!--如果配置线程池加入如下配置-->
+<dependency>
+    <groupId>org.apache.activemq</groupId>
+    <artifactId>activemq-pool</artifactId>
+</dependency>
+```
+
+配置文件：
+
+``` properties
+# activeMQ配置
+spring.activemq.broker-url=tcp://127.0.0.1:8161
+# activeMQ集群配置
+# spring.activemq.broker-url=failover:(tcp://localhost:616161,tcp://localhost:717171)
+spring.activemq.user=admin
+spring.activemq.password=admin
+# 线程池的配置,需要添加线程池依赖,不添加开启会报错。
+# spring.activemq.pool.enabled=true
+# spring.activemq.pool.max-connections=100
+```
+
+springboot启动类添加：
+
+``` java
+@EnableJms // 开启支持jms
+```
+
+创建Service：
+
+``` java
+@Service
+public class PorducerServiceImpl implements ProducerService {
+
+    @Autowired
+    private JmsMessagingTemplate jmsTemplate;
+
+    @Autowired
+    private Queue queue;
+
+    @Override
+    public void sendMessage(Destination destination, final String message) {
+        jmsTemplate.convertAndSend(destination, message);
+    }
+
+    @Override
+    public void sendMessage(final String message) {
+        jmsTemplate.convertAndSend((Destination) this.queue, message);
+    }
+}
+```
+
+被实现的接口：
+
+```java
+public interface ProducerService {
+    /**
+     * 指定消息队列，还有消息
+     * @param destination 指定消息队列
+     * @param message 消息
+     */
+    void sendMessage(Destination destination, final String message);
+
+    /**
+     * 使用默认消息队列发送消息
+     * @param message 消息
+     */
+    void sendMessage(final String message);
+}
+```
+
+controller测试
+
+``` java
+@RestController
+@RequestMapping(value = "/api/v1")
+public class OrderController {
+
+    @Autowired
+    private ProducerService producerService;
+
+    @GetMapping(value = "order")
+    public Object order(String msg) {
+        Destination destination = new ActiveMQQueue("order.queue");
+        producerService.sendMessage(destination, msg);
+        return "Send OK";
+    }
+
+    @GetMapping(value = "common")
+    public Object common(String msg) {
+        producerService.sendMessage(msg);
+        return "Send OK";
+    }
+}
+```
+
+
+
+*注意，头文件一定引正确。*
+
+
+
+消费者实时监听对应的队列：
+
+``` java
+@Component
+public class OrderConsumer {
+    @JmsListener(destination = "order.queue")
+    public void receiveQueue(String text) {
+        System.out.println("OrderConsumer收到的报文为：" + text);
+    }
+}
+```
+
+
+
+## RoekerMQ4.x
