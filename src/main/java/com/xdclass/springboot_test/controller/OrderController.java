@@ -27,12 +27,18 @@ public class OrderController {
         // 生成消息队列地址
         Destination destination = new ActiveMQQueue("order.queue");
         producerService.sendMessage(destination, msg);
-        return "Send OK";
+        return "order send OK";
     }
 
     @GetMapping(value = "common")
     public Object common(String msg) {
         producerService.sendMessage(msg);
-        return "Send OK";
+        return "common send OK";
+    }
+
+    @GetMapping(value = "topic")
+    public Object topic(String msg) {
+        producerService.publish(msg);
+        return "topic send OK";
     }
 }

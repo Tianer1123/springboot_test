@@ -11,6 +11,7 @@ import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
 import javax.jms.Destination;
 import javax.jms.Queue;
+import javax.jms.Topic;
 
 
 @Service
@@ -33,5 +34,13 @@ public class PorducerServiceImpl implements ProducerService {
     @Override
     public void sendMessage(final String message) {
         jmsTemplate.convertAndSend(this.queue, message);
+    }
+
+    // ==== 发布订阅相关代码 ====
+    @Autowired
+    private Topic topic;
+    @Override
+    public void publish(String msg) {
+        this.jmsTemplate.convertAndSend(this.topic, msg);
     }
 }

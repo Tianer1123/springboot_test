@@ -1597,6 +1597,8 @@ spring.activemq.password=admin
 # spring.activemq.pool.max-connections=100
 ```
 
+### 点对点模型
+
 springboot启动类添加：
 
 ``` java
@@ -1689,6 +1691,82 @@ public class OrderConsumer {
 }
 ```
 
+### 发布订阅模型
+
+``` properties
+# 开启发布订阅配置
+spring.jms.pub-sub-domain=true
+```
+
+``` java
+@Component
+public class TopicSub {
+    @JmsListener(destination = "video.topic")
+    public void receive1(String text) {
+        System.out.println("video.topic 消费者: receive1 = " + text);
+    }
+    @JmsListener(destination = "video.topic")
+    public void receive2(String text) {
+        System.out.println("video.topic 消费者: receive2 = " + text);
+    }
+    @JmsListener(destination = "video.topic")
+    public void receive3(String text) {
+        System.out.println("video.topic 消费者: receive3 = " + text);
+    }
+}
+```
+
+默认不同时支持两种模式（p2p和pub-sub），需要修改一些信息。在启动类中：
+
+``` java
+// 需要给topic定义独立的JmsListenerContainer
+@Bean
+public JmsListenerContainerFactory<?> jmsListenerContainerTopic(ConnectionFactory activeMQConnectionFactory) {
+    DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
+    bean.setPubSubDomain(true);
+    bean.setConnectionFactory(activeMQConnectionFactory);
+    return bean;
+}
+```
+
+并在订阅者中@JmsListener中添加如下代码：
+
+``` java
+@JmsListener(destination = "video.topic", containerFactory = "jmsListenerContainerTopic")
+```
+
+然后禁用pub-sub配置：
+
+``` properties
+# 开启发布订阅配置,不使用配置文件控制
+# spring.jms.pub-sub-domain=true
+```
+
 
 
 ## RoekerMQ4.x
+
+阿里开源给Apache的一个高性能消息队列中间件。
+
+
+
+# 响应式编程
+
+1. 理解
+
+   * 基于事件驱动(Event-driven)
+
+   * 一系列事件被称为"流"
+   * 异步
+   * 非阻塞
+   * 观察者模式
+
+   例子：
+
+   ``` java
+   int a = b + c; // 命令式编程： b和c变化，a不变化
+   int a = b + c; // 响应式编程： a的变化与b、c的变化相关(事件驱动)
+   ```
+
+2. [官网介绍：https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-webflux](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-webflux)
+

@@ -20,4 +20,10 @@ public interface ProducerService {
      * @param message 消息
      */
     void sendMessage(final String message);
+
+    /**
+     * 消息发布者
+     * @param msg 信息
+     */
+    void publish(String msg);
 }
