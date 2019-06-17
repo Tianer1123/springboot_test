@@ -23,11 +23,19 @@
                 %date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L --- %msg%n
             </pattern>
         </encoder>
-        <!--滚动策略-->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!--路径-->
-            <fileNamePattern>app_log/app.info.%d.log</fileNamePattern>
+        <!--&lt;!&ndash;滚动策略&ndash;&gt;-->
+        <!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+            <!--&lt;!&ndash;路径&ndash;&gt;-->
+            <!--<fileNamePattern>app_log/app.info.%d.log</fileNamePattern>-->
+        <!--</rollingPolicy>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>app_log/app.info.%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <!--最大日志尺寸-->
+            <maxFileSize>200MB</maxFileSize>
+            <!--日志文件保留天数-->
+            <maxHistory>15</maxHistory>
         </rollingPolicy>
+
     </appender>
 
     <appender name="fileErrorApp" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -54,7 +62,7 @@
             <!--最大日志尺寸-->
             <maxFileSize>100MB</maxFileSize>
             <!--日志文件保留天数-->
-            <maxHistory>1</maxHistory>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
