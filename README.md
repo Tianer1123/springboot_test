@@ -1768,5 +1768,5 @@ public JmsListenerContainerFactory<?> jmsListenerContainerTopic(ConnectionFactor
    int a = b + c; // 响应式编程： a的变化与b、c的变化相关(事件驱动)
    ```
 
-2. [官网介绍：https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-webflux](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-webflux)
+2. [https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-webflux](https://docs.spring.io/spring-boot/docs/2.1.5.RELEASE/reference/htmlsingle/#boot-features-webflux)
 
